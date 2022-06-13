@@ -6,6 +6,7 @@ tags:
   - SLAM
 categories:
   - SLAM
+mathjax: true
 ---
 
 ## SLAM Study - Introduction
