@@ -237,7 +237,7 @@ $$
 EKF SLAM의 point-landmark example에서의 유도를 간략히 설명해 보자면 한 시점에서 $g$와 $h$가 Talyor Expansion으로 선형화되고, 그 선형화 된 식에 Kalman Filter를 적용하는 방식이다.   
 EKF SLAM은 기본적으로 online SLAM으로 분류된다. 밑의 그림이 이를 대략적으로 나타내고 있다. 
 
-<p align="center"><img src="https://kimh060612.github.io/img/KalmanFilterExample.png.png" width="100%"></p>
+<p align="center"><img src="https://kimh060612.github.io/img/KalmanFilterExample.png" width="100%"></p>
 
 위 그림에서 점선이 로봇의 실제 궤적이고 회색 타원이 EKF가 추정한 로봇의 위치이다. 또한 회색 점이 Landmark point의 실제 위치이고 흰색 타원이 EKF가 추정한 point의 위치이다.   
 
