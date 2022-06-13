@@ -1,11 +1,13 @@
 ---
 title: Modern Robotics Chapter 3) Rigid-Body Motions
-categories: 
-    - Robotics
-tags: 
-    - Physics
-    - Robotics
+tags:
+  - Physics
+  - Robotics
+categories:
+  - Robotics
+date: 2022-06-01 17:25:28
 ---
+
 
 ## Modern Robotics Chapter 3) Rigid-Body Motions
 
@@ -347,6 +349,14 @@ $$
 
 #### Exponential Coordinate Representation
 
-이러한 
+이번 파트에서는 Rotation Matrix를 표현하는 방법을 배운다. Exponential Coordinate를 통해서 Rotation Matrix를 표현하면 $\text{Rot}(\hat{w}, \theta)$의 행렬을 복잡하게 표현하지 않아도 된다.
+
+그리고 이런 표현 방식이 나타내는 의미가 몇가지 있다.
+
+* 회전 행렬 $R$은 refernece frame $\{s\}$를 기준 축 $\hat{w}$에 대해서 $\theta$만큼 회전시킨 것으로 표현할 수 있다.
+* 
+
+그 전에 Exponential Coordinate를 알아보기 위한 수학적인 지식을 확립하고자 한다. 지난번에도 그랬듯이, 수학적인 지식은 되도록이면 간략하게 적어보고자 한다. 본질을 파악하는 것이 훨씬 중요하다는 것을 잊지 않았으면 좋겠다.
+
 
 
