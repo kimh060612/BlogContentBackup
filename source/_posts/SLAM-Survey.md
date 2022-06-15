@@ -226,13 +226,13 @@ SLAM이 워낙 포괄적인 문제이다보니, 알고리즘별로 여러 접근
 EKF 알고리즘은 robot의 estimation을 다음과 같은 multivariate Gaussian으로 표현한다.
 
 $$
-p(x_t, m| Z_t, U_t) = \mathcal{N}(\bold{\mu}_t, \bold{\Sigma}_t)
+p(x_t, m| Z_t, U_t) = \mathcal{N}(\bf{\mu}_t, \bf{\Sigma}_t)
 \tag{Definition 12}
 $$
 
-여기서 고차원의 벡터 $\bold{\mu}_t$는 현재 위치 $x_t$에 대해서 최적의 estimation을 나타낸다. 그리고 $\bold{\Sigma}_t$는 $\bold{\mu}_t$에 대한 평균적인 error이다. 
+여기서 고차원의 벡터 $\bf{\mu}_t$는 현재 위치 $x_t$에 대해서 최적의 estimation을 나타낸다. 그리고 $\bf{\Sigma}_t$는 $\bf{\mu}_t$에 대한 평균적인 error이다. 
 
-지난번에 다루었던 point-landmark 예시에서는 $\bold{\mu}_t$는 $3 + 2N$차원아고 $\bold{\Sigma}_t$는 $(3+2N) \times (3+2N)$차원인 양의 준 정방 행렬이다. 
+지난번에 다루었던 point-landmark 예시에서는 $\bf{\mu}_t$는 $3 + 2N$차원아고 $\bf{\Sigma}_t$는 $(3+2N) \times (3+2N)$차원인 양의 준 정방 행렬이다. 
 
 EKF SLAM의 point-landmark example에서의 유도를 간략히 설명해 보자면 한 시점에서 $g$와 $h$가 Talyor Expansion으로 선형화되고, 그 선형화 된 식에 Kalman Filter를 적용하는 방식이다.   
 EKF SLAM은 기본적으로 online SLAM으로 분류된다. 밑의 그림이 이를 대략적으로 나타내고 있다. 
@@ -262,14 +262,14 @@ EKF SLAM의 가장 난점은 연산이 quadratic하다는 것이다. 시간 복�
 모든 시간대에서 FastSLAM은 $K$개의 다음과 같은 type의 Particle을 가진다.
 
 $$
-X_t^{[k]}, \bold{\mu}_{t, 1}^{[k]}, \dots, \bold{\mu}_{t, N}^{[k]}, \bold{\Sigma}_{t, 1}^{[k]}, \dots, \bold{\Sigma}_{t, N}^{[k]}
+X_t^{[k]}, \bf{\mu}_{t, 1}^{[k]}, \dots, \bf{\mu}_{t, N}^{[k]}, \bf{\Sigma}_{t, 1}^{[k]}, \dots, \bf{\Sigma}_{t, N}^{[k]}
 \tag{Definition 13}
 $$
 
 위 정의 13에서 $[k]$는 Sample의 index이다. 위 식에 대한 설명을 하자면 다음과 같다. 
 
 * Sample Path $X_t^{[k]}$
-* $N$ (Landmark의 point의 개수)개의 2-D Gaussian Distribution의 mean $\bold{\mu}_{t, n}^{[k]}$과 Covariance $\bold{\Sigma}_{t, n}^{[k]}$
+* $N$ (Landmark의 point의 개수)개의 2-D Gaussian Distribution의 mean $\bf{\mu}_{t, n}^{[k]}$과 Covariance Matrix $\bf{\Sigma}_{t, n}^{[k]}$
 
 위에서 $n$은 landmark point의 index($1 \leq n \leq N$)이다.
 
@@ -289,7 +289,7 @@ $$
   이러한 $w_t^{[k]}$를 importance weight라고 한다. (현재 measurement에 대해서 이 particle이 얼마나 중요한지를 나타내는 factor)  
 
   $$
-  w_t^{[k]} = \mathcal{N}(z_t | x^{[k]}_t, \bold{\mu}_{t, 1}^{[k]}, \bold{\Sigma}_{t, N}^{[k]})
+  w_t^{[k]} = \mathcal{N}(z_t | x^{[k]}_t, \bf{\mu}_{t, 1}^{[k]}, \bf{\Sigma}_{t, N}^{[k]})
   \tag{Definition 15}
   $$
 
@@ -320,3 +320,71 @@ $$
 이를 해결하기 위해서 또 많은 연구들이 등장했는데, 여기서는 다루지 않도록 하겠다.
 
 #### Graph-Based Optimization
+
+이번에 다룰 내용은 SLAM 문제를 풀 수 있는 3번째 방법인 Graph Based Optimization이다. 이 방법은 non-linear sparse optimization으로 SLAM을 해결한다. 이 방법을 직관적으로 설명하자면 다음과 같다.
+
+1. Landmark와 robot의 location은 graph의 node라고 생각할 수 있다.
+2. 각각의 연속된 location pair $x_{t-1}, x_t$는 edge로써 연결되어 있다.
+3. 해당 edge는 odometry $u_t$로 부터 나오는 정보를 표현한다.
+4. 이때, 해당 edge는 시간 $t$에서의 location $x_t$에서 landmark $m_i$를 감지했을때 발생한다.
+
+이러한 Graph의 Edge는 Soft constraints이다. 이러한 Constraints를 만족시키는 것으로 map과 robot의 full path를 추정할 수 있다. 이 과정은 밑의 그림으로 자세히 설명할 수 있다. 
+
+<p align="center"><img src="https://kimh060612.github.io/img/SLAMGraphRep.png" width="100%"></p>
+
+그림을 보면 robot이 이동하면서 위치 $x_t$애서 landmark $m_i$를 감지할때마다 edge가 생기게 되고, 그것을 adjacent matrix로 표현해 나갈 수 있다. 이러한 과정에서 위 matrix는 sparse한 상태로 남게 된다. 최악의 경우에는 node에 비해 constraints의 갯수가 시간과 node의 개수에 대해서 linear해질 수도 있다. 
+
+정보 이론적으로 생각해서, 우리가 이러한 SLAM문제를 푸는 것은 이 그래프의 엔트로피를 최소화 하는 것으로 생각해 볼 수 있다. 그 관점에서 우리는 graph를 다루기 이전에 지난번에 정의한 posterior probability에 log를 씌워보자.
+
+$$
+\ln p(X_T,m |Z_T,U_t)
+\tag{Definition 16}
+$$
+
+우리는 각 location과 mapping의 sensing 사건이 독립적이라고 가정했을때 다음과 같이 수식을 전개할 수 있다.
+
+$$
+\ln p(X_T,m |Z_T,U_t) = \text{const} +  \sum_t \log p(x_t | x_{t - 1}, u_t) + \sum_t  \log p(z_t | x_t, m)
+\tag{equation 1}
+$$
+
+엔트로피를 최소화 한다는 것은 definition 16을 최대화 하는 것과 같다.
+
+$$
+X_T^*, m^* = \argmax_{X_t, m} \ln p(X_T,m |Z_T,U_t)
+\tag{equation 2}
+$$
+
+equation 1을 point-landmark example에서 Gaussian 추정을 적용하여 다음과 같은 quadratic form으로 표현할 수 있다. 
+
+$$
+\ln p(X_T,m |Z_T,U_t) = \text{const} +  \sum_t [x_t - g(x_{t - 1}, u_t)]^TR_t^{-1}[x_t - g(x_{t - 1}, u_t)] + \sum_t  [z_t - h(x_t, m)]^TQ_t^{-1}[z_t - h(x_t, m)]
+\tag{equation 3}
+$$
+
+위 equation 3를 최적화 하는 것이 SLAM문제를 푸는 것으로 연결된다. 흔한 선택지로는 sparse Cholesky & QR decomposition이고, Gradient Descent나 conjugate gradient 방법도 좋은 선택지이다.
+
+Graphical SLAM은 EKF보다 훨씬 더 넓은 map으로 scale을 넓힐 수 있다는 것이 장점이다. 몇몇 추정을 더해야하기는 하지만, EKF에 비하면 Graph method의 update에 필요한 time-complexity와 space-complexity는 각각 constant/linear하다.
+
+#### Relation of Paradigms
+
+* EKF SLAM: quadratic한 Time/Space Complexity로 인한 map의 scaling에 한계가 있다 + linearization 과정에서 mapping이 잘못될 수 있다.
+* Particle filter: EKF SLAM에 있던 계산 복잡도의 한계를 해결했으나, map이 복잡해질 수록 필요한 particle의 수가 기하 급수적으로 늘어난다.
+* Graph-based Optimization: 시간복잡도와 공간 복잡도를 혁명적으로 해결함으로써 가장 큰 mapping을 그릴 수 있는 알고리즘이 되었다. 
+
+
+### Visual RGB-D SLAM
+
+최근에 SLAM의 중요한 연구 화제는 단영 Visual SLAM이다. Visual SLAM은 RGB-D Sensor(Kinect)나 Camera를 활용하여 주변 map을 생성하거나 로봇의 6-DOF Pose를 추정하는 알고리즘이다. Visual SLAM은 appearance information을 활용해서 loop-closing같은 어려운 문제를 해결할 수 있는 단초를 제공하기도 한다. 이러한 Visual SLAM은 최근까지도 Video Stream을 처리할 HW 성능이 부족해서 난항을 겪고 있었다.   
+Davison이 이러한 연구에 있어서 선구자적인 역할을 하면서 해당 분야가 각광을 받게 되었다.
+
+Davison과 다른 연구자들에 의하면 Visual SLAM은 camera로 얻어지는 measurement가 odometry 정보를 제공할 수 있게 만드는 것이라고 한다. 이러한 연구들의 종파들 중에는 Feature detection, Feature matching, outlier rejection, constraint estimation, trajectory optimization 등이 있다.
+
+그리고 Visual Information은 loop-closing을 위한 정보 또한 엄청나게 많이 제공을 하는데, 대표적인 예시가 바로 visual object detection을 이용한 location recognition이다. 
+
+또한, robust한 visual SLAM의 이정표를 만든 연구는 PTAM이다. 이 연구는 keyframe mapping과 localization을 별도릐 thread로 나눠서 계산을 진행함으로써 online processing에서의 robustness와 성능을 동시에 높일 수 있었다. 여기서의 keyframe은 현재 Visual SLAM에서 복잡도를 줄일 수 있는 방법으로써 주류를 이루고 있다.   
+다른 방법으로는 view-based mapping system이라고 large-scale에서 pose graph optimization을 기반으로 visual mapping을 진행하는 방법도 있다.
+
+다른 계파로는, RGB-D sensor(Kinect)를 이용해서 mapping과 localization을 동시에 진행하는 연구들도 있다. 그리고 object의 surface를 스캔하는 연구도 있다. 이러한 연구는 sensor의 pose와 surface point의 위치를 최적화 하는 연구이다.
+
+앞으로는 Dense processing method라고 해서 GPU를 활용하여 조금 더 성능을 fine tuning하는 것도 있다.
