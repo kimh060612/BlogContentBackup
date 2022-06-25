@@ -358,7 +358,9 @@ $$
 equation 1을 point-landmark example에서 Gaussian 추정을 적용하여 다음과 같은 quadratic form으로 표현할 수 있다. 
 
 $$
-\ln p(X_T,m |Z_T,U_t) = \text{const} +  \sum_t [x_t - g(x_{t - 1}, u_t)]^TR_t^{-1}[x_t - g(x_{t - 1}, u_t)] + \sum_t  [z_t - h(x_t, m)]^TQ_t^{-1}[z_t - h(x_t, m)]
+\ln p(X_T,m |Z_T,U_t) = \text{const} + \\
+\sum_t [x_t - g(x_{t - 1}, u_t)]^TR_t^{-1}[x_t - g(x_{t - 1}, u_t)] + \\ 
+\sum_t  [z_t - h(x_t, m)]^TQ_t^{-1}[z_t - h(x_t, m)]
 \tag{equation 3}
 $$
 
