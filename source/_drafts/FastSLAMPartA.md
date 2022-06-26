@@ -32,9 +32,23 @@ SLAM 알고리즘은 자율주행 로봇에 꼭 필요한 알고리즘이다. �
 
 ### Introduction
 
-본 논문 이전의 SLAM의 경우에는 대체적으로 EKF를 활용하여 robot의 pose에 대한 landmark의 위치의 posterior distribution을 구하는 것이었다. 하지만 이러한 방식에는 큰 단점이 있었는데, 바로 시간 복잡도가 landmark 점의 개수의 제곱에 비례한다는 것이다. 이러한 시간 복잡도 때문에 scale up된 환경에서 SLAM을 구동시키는 것이 매우 어려워졌다. 따라서 이번 논문에서는 bayesian 기법을 활용하여 
+본 논문 이전의 SLAM의 경우에는 대체적으로 EKF를 활용하여 robot의 pose에 대한 landmark의 위치의 posterior distribution을 구하는 것이었다.  
+하지만 이러한 방식에는 큰 단점이 있었는데, 바로 시간 복잡도가 landmark 점의 개수의 제곱에 비례한다는 것이다.   
+이러한 시간 복잡도 때문에 scale up된 환경에서 SLAM을 구동시키는 것이 매우 어려워졌다. 따라서 이번 논문에서는 bayesian 기법을 활용하여 SLAM에 접근한다. 밑의 Figrue 1을 보면 SLAM을 잘 표현할 수 있는 generative probabilistic model(Dynamic Bayesian Network)가 그려져 있다.  
 
 <p align="center"><img src="https://kimh060612.github.io/img/BayesianSLAM.png" width="100%"></p>
+
+위의 Figure 1을 보면 SLAM 문제 자체가 중요한 conditional independency를 나타내고 있다는 것이 자명하다.  
+대표적으로 robot path의 정보가 독립적으로 각각의 landmark의 measure를 생성한다는 점이다. 
+
+이러한 점들을 종합해서 본 논문에서는 FastSLAM 이라는 알고리즘을 제시한다.  
+이 알고리즘은 SLAM 문제를 다음과 같이 분해하여 해결한다. 
+
+* robot localization problem
+* collection of landmark estimation problem conditioned on robot pose estimation
+
+해당 논문에서는 Particle Filter기법과 tree based data structure를 혼합하여 시간 복잡도를 $O(M\log K)$로 줄여냈다. 
+이제부터 그 방법을 알아보도록 할 것이다. 
 
 ### SLAM Problem Definition
 
