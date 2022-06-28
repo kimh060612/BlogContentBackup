@@ -69,8 +69,29 @@ $$
 \tag{definition 2}
 $$
 
+그리고 우리의 경우에는 robot이 감지할 수 있는 Landmark의 measurement의 개수는 1 timestep 당 1라고 가정한다. 이는 오로지 수학적인 편의성을 위한 것이다. 
 
+Sensor measurement는 measurement model이라는 확률적인 법칙에 의해 지배된다. 이 model은 다음과 같이 표현할 수 있다.
 
+$$
+p(z_t | s_t, \theta, n_t)
+\tag{definition 3}
+$$
 
+여기서 $\theta$의 경우, 위에서 언급한 landmark point의 집합이고, $n_t$의 경우 시간 $t$에서 로봇이 감지한 landmark의 index이다.   
+여기서 $n_t$같은 경우에는 종종 *correspondence*라고도 불리운다. 이러한 landmark 같은 경우에는 서로 identifiable하다고 가정한다. 
+
+일반적으로 이러한 정의들을 놓고 보았을때, SLAM은 모든 landmark의 location $\theta$와 로봇의 pose $s_t$를 measurements $z^t = z_1,\dots,z_t$와 odometry $u^t=u_1,\dots,u_t$를 통해서 결정하는 것이다.  
+확률을 통해서 표기를 했을때, 이는 posterior distribution $p(s^t, \theta| z^t, u^t)$라고 할 수 있다. 
+
+만약, correspondence가 알려져 있다면, SLAM은 더욱 간단하게 정의될 수 있다. 
+
+$$
+p(s^t, \theta| z^t, u^t, n^t)
+\tag{definition 4}
+$$
+
+앞서 언급했듯이, 모든 landmark estimation 문제는 로봇의 경로 $s^t$와 correspondence $n^t$를 알고 있다면 서로 독립이 된다. 이러한 가정은 FastSLAM 알고리즘에서의 공리로써 다음 장에서 사용되게 된다. 
 
 ### FastSLAM with Known Correspondences  
+
