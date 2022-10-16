@@ -12,9 +12,8 @@ mathjax: true
 
 1. Introduction
 2. Distirbution of Two Random Variables
-3. Transformation: Binominal Random Variables
-4. Conditional Distribution and Expectation
-5. Independence Random Variables
+3. Conditional Distribution and Expectation
+4. Independence Random Variables
 
 ## Introduction
 
@@ -154,9 +153,85 @@ E[\mathbf{X}] =
 $$
 
 
-## Transformation: Binominal Random Variables
+## Conditional Distribution and Expectation
 
+그렇다면 이러한 확률 벡터들을 다루는데 있어서 조건부 확률(즉, 어떤 확률 변수의 값이 특정되어 있을때)의 확률은 어떻게 구할 수 있을까? 이번 파트에서는 그것을 알아볼 것이다.  
+우선 확률 변수가 이산형일때부터 알아보자. 
 
+우선 다음과 같은 확률을 관찰해보자.
+
+$$
+P(X_2 = x_2 | X_1 = x_1) = \frac{P(X_1 = x_1, X_2 = x_2)}{P(X_1 = x_1)} = \frac{p_{X_1, X_2}(x_1, x_2)}{p_{X_1}(x_1)}
+$$
+
+위와 같은 확률을 다음과 같이 정의한다.
+
+$$
+p_{X_2|X_1}(x_2|x_1) = \frac{p_{X_1, X_2}(x_1, x_2)}{p_{X_1}(x_1)}, \space x_2 \in \mathcal{S}_{X_2}
+\tag{definition 7}
+$$
+
+위 정의를 두고 *조건부 PMF*라고 한다.   
+같은 방법으로 조건부 PDF 또한 도출이 가능하다.
+
+$$
+f_{X_2|X_1}(x_2|x_1) = \frac{f_{X_1,X_2}(x_1, x_2)}{f_{X_1}(x_1)}
+\tag{definition 8}
+$$
+
+그리고 다음과 같이 $X_2$에 대한 함수 $u(X_2)$와 $X_1 = x_1$이라는 것이 주어졌을때, 조건부 기댓값은 다음과 같이 구할 수 있다.
+
+$$
+E[u(X_2)|x_1] = \int_{-\infty}^{\infty} u(x_2)f_{X_2|X_1}(x_2|x_1)dx_2
+\tag{definition 9}
+$$
+
+그리고 조건부 분산은 다음과 같이 구할 수 있다.
+
+$$
+Var(X_2|x_1) = E[X_2^2|x_1] - \{E[X_2|x_1]\}^2
+\tag{definition 10}
+$$
+
+그리고 이에 따른 정리는 다음과 같다.
+
+* $(X_1, X_2)$가 확률 벡터이고 $X_2$의 분산이 유한이라고 하면 
+
+1. $E[E(X_2|X_1)] = E(X_2)$
+2. $Var[E(X_2|X_1)] \leq Var(X_2)$
+
+이에 대한 증명은 Appendix에서 하도록 하겠다.  
+이 성질 2개는 아주 중요한 것을 시사한다. $\mu_2$를 모르는 상황에서 우리는 확률 변수 $X_2$, $E[X_2|x_1]$의 데이터를 뽑아서 $\mu_2$를 추측할 수 있는데, 2번째 성질에 의하여 $X_2$보다는 $E[X_2|x_1]$가 더 신뢰할 수 있는 데이터를 제공한다는 것이다. 이 성질은 7장에서 요긴하게 사용하게 될 것이다.
+
+## Independence Random Variables
+
+이번 파트에서는 우리는 결합 분포에서 사건의 독립이라는 조건이 어떠한 영향을 미치는지 알아볼 것이다. 우선, 두 확률 변수 $X_1, X_2$가 있을때, 두 확률 변수가 담당하는 사건이 독립이라는 것은 다음을 의미한다.
+
+$$
+f_{X_2}(x_2) = f_{X_2|X_1}(x_2|x_1) \rightarrow f_{X_1,X_2}(x_1,x_2) = f_{X_1}(x_1)f_{X_2}(x_2)
+$$
+
+그리고 독립이 아닌 확률 변수는 의존 이라고 부른다. 이러한 독립과 관련하여 다음과 같은 정리들이 있다.
+
+1. 확률 변수 $X_1, X_2$는 각각 받침 $\mathcal{S}_1, \mathcal{S}_2$를 가지고 결합 pdf $f(x_1,x_2)$를 가진다고 하자. 이 경우에 $f(x_1,x_2)$을 각각 $x_1, x_2$만으로 표현되는 함수 $g(x_1)$과 $h(x_2)$의 곱으로 표현할 수 있다.
+2. $(X_1,X_2)$가 결합 CDF $F(x_1, x_2)$를 가지고 각각 marginal CDF 또한 가진다고 하자. 그렇다면 다음 조건이 만족되면 $X_1,X_2$는 서로 독립이다.
+    $$
+    \forall(x_1, x_2) \in \mathbb{R}^2, F(x_1,x_2) = F_1(x_1)F_2(x_2)
+    $$
+3. $X_1,X_2$가 독립이라는 것은 다음과 필요 충분 조건이다.
+    $$
+    P(a < X_1 \leq b, c < X_2 \leq d) = P(a < X_1 \leq b)P(c < X_2 \leq d)
+    $$
+4. $X_1,X_2$가 독립이며 각각 $E[u(X_1)], E[v(X_2)]$가 존재한다면 다음이 성립한다.
+    $$
+    E[u(X_1)v(X_2)] = E[u(X_1)]E[v(X_2)]
+    $$
+5. $X_1,X_2$에 대해 결합 MGF $M(t_1, t_2)$가 존재한다면 $X_1,X_2$는 다음일때 독립이다
+    $$
+    M(t_1,t_2) = M(t_1,0)M(0,t_2)
+    $$
+
+일단 각각의 정리들에 대한 증명은 Appendix에서 자세히 논하도록 하겠다.
 
 
 

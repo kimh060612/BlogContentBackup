@@ -5,4 +5,5 @@ tags:
   - Statistics
 categories:
   - Mathematical Statistics
+mathjax: true
 ---
