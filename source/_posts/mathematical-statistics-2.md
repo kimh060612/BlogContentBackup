@@ -6,6 +6,7 @@ tags:
 categories:
   - Mathematical Statistics
 mathjax: true
+date: 2022-10-21 22:48:20
 ---
 
 ## Index
