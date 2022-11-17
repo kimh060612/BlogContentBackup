@@ -7,3 +7,8 @@ categories:
   - Mathematical Statistics
 mathjax: true
 ---
+
+## Index
+
+1. Introduction
+2. 
